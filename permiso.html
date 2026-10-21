@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Permiso de Google · Hermes</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 16px; line-height: 1.5; color: #1d2b2b; background: #fbfaf7; text-align: center; }
+  button { font-size: 1.2rem; padding: 16px 28px; border: 0; border-radius: 12px; background: #0b6e6e; color: #fff; width: 100%; }
+  textarea { width: 100%; height: 120px; margin-top: 16px; font-size: 0.8rem; }
+  .ok { color: #0b6e6e; font-weight: 600; min-height: 1.5em; }
+</style>
+</head>
+<body>
+  <h1>Permiso recibido</h1>
+  <p id="texto">Toca el botón para copiar el código y pégaselo a Claude en el chat.</p>
+  <button id="copiar" type="button">Copiar</button>
+  <p class="ok" id="estado" aria-live="polite"></p>
+  <textarea id="codigo" readonly></textarea>
+  <script>
+    // El código solo sirve junto a la clave que guarda el servidor de Eddy; esta página no lo envía a ningún lado.
+    var params = new URLSearchParams(location.search);
+    var caja = document.getElementById('codigo');
+    if (params.get('error')) {
+      document.getElementById('texto').textContent = 'Google respondió: ' + params.get('error') + '. Avísale a Claude.';
+    }
+    caja.value = location.href;
+    document.getElementById('copiar').onclick = function () {
+      caja.select();
+      var listo = function () { document.getElementById('estado').textContent = '¡Copiado! Ahora pégalo en el chat.'; };
+      if (navigator.clipboard) navigator.clipboard.writeText(caja.value).then(listo, function () { document.execCommand('copy'); listo(); });
+      else { document.execCommand('copy'); listo(); }
+    };
+  </script>
+</body>
+</html>
